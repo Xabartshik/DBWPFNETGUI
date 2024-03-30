@@ -1,0 +1,60 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="BAW">
+        <Setter Property="Control.FontFamily" Value="Consolas" />
+        <Setter Property="Control.Background" Value="#FF4C4C4C" />
+        <Setter Property="Control.Foreground" Value="#e9edf5" />
+        <Setter Property="Control.Focusable" Value="False" />
+    </Style>
+    <Style x:Key="BAWMIC" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource BAW}">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Width" Value="100" />
+        <Setter Property="Height" Value="25" />
+        <!--<Setter Property="Control.Background" Value="#FF242425" />-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <Border x:Name="Border">
+                        <Grid>
+                            <ContentPresenter Margin="10,6,3,6" ContentSource="Header" RecognizesAccessKey="True" HorizontalAlignment="Left"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="False" Focusable="False" PopupAnimation="Fade">
+                            </Popup>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+ 
+    
+    <Style x:Key="MISBaW" TargetType="MenuItem" BasedOn="{StaticResource BAW}" >
+        <Setter Property="Width" Value="100" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <Border x:Name="Border">
+                        <Grid>
+                            <ContentPresenter Margin="0" ContentSource="Header" RecognizesAccessKey="True" HorizontalAlignment="Center"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="False" Focusable="True" PopupAnimation="Fade">
+                                <Border x:Name="SubmenuBorder" SnapsToDevicePixels="True" BorderThickness="2" Background="#FF242425">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="#868686" />
+                                    </Border.BorderBrush>
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle">
+                                    </StackPanel>
+                                </Border>
+                            
+                            </Popup>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Control.Margin" Value="3, 3, 3, 3" />
+    </Style>
+
+
+</ResourceDictionary>
