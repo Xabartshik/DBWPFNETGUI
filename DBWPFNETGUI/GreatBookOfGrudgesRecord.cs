@@ -166,6 +166,7 @@ namespace DBWPFNETGUI
         }
 
 
+
     }
     //Класс, представляющий собой книгу обид. Он хранит в себе записи GreatBookOfGrudgesRecord в ObservableCollection 
     public class GreatBookOfGrudges
@@ -192,6 +193,22 @@ namespace DBWPFNETGUI
                 Records[index] = record;
                 //OnPropertyChanged("Records"); // Уведомляем об изменении коллекции Records
             }
+        }
+
+        //Функция сохранения данных в БД
+        public void Save()
+        {
+            SQLiteHelper.SaveObservableCollection(this.Records);
+
+        }
+        //Функция загрузки данных в БД
+        public void Load()
+        {
+            //Очистка данных
+            this.Records.Clear();
+            //Загрузка данных
+            this.Records = SQLiteHelper.LoadObservableCollection();
+
         }
 
 
@@ -249,4 +266,6 @@ namespace DBWPFNETGUI
         }
 
     }
+
+
 }

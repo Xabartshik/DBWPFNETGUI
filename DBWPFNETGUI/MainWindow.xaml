@@ -14,19 +14,19 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="#FF404044" Margin="0, 0, 0, 0">
-        <DataGrid x:Name="dataGrid" MinHeight="404" Margin="75,30,10,0"/>
+        <DataGrid x:Name="dataGrid" MinHeight="404" Margin="75,30,10,0" LoadingRow="dataGrid_LoadingRow" CellEditEnding="dataGrid_CellEditEnding"/>
         <Menu Padding="3" Height="25" Style="{DynamicResource BAW}" Focusable="False" VerticalAlignment="Top">
             <MenuItem x:Name="MIFile" Style="{DynamicResource MISBaW}" Header="Файл" Width="60">
 
-                <MenuItem x:Name="MIFLoad" Header="Загрузить"  Style="{DynamicResource BAW}" Focusable="False" Click="MIFLoad_Click" />
-                <MenuItem x:Name="MIFSave" Header="Сохранить"  Style="{DynamicResource BAW}" Focusable="False" Click="MIFSave_Click"/>
+                <MenuItem x:Name="MIFLoad" Header="Загрузить" ToolTip="Загружает книгу обид из Grudges.db. Ctrl + L"  Style="{DynamicResource BAW}" Focusable="False" Click="MIFLoad_Click" />
+                <MenuItem x:Name="MIFSave" Header="Сохранить" ToolTip="Сохраняет книгу обид в Grudges.db. Ctrl + S"  Style="{DynamicResource BAW}" Focusable="False" Click="MIFSave_Click"/>
             </MenuItem>
 
 
             <MenuItem Style="{DynamicResource MISBaW}" Header="Настройки"   Width="60">
-                <MenuItem Header="Автосохранение"  Style="{DynamicResource BAW}" IsCheckable="True"/>
+                <MenuItem x:Name="MISAutosave" Header="Автосохранение"  Style="{DynamicResource BAW}" ToolTip="Автоматическое сохранение книги обид каждые 5 минут" IsCheckable="True" Checked="MISAutosave_Checked" Unchecked="MISAutosave_Unchecked"/>
                 <MenuItem Header="Цветовыделение"  Style="{DynamicResource BAW}" IsCheckable="True" />
-                <MenuItem Header="Автоматическое добавление строки"  Style="{DynamicResource BAW}" IsCheckable="True" />
+                <MenuItem x:Name="MISAutoadd" Header="Автоматическое добавление строки" ToolTip="Автоматически добавляет еще одну строку в книгу после нажатия Enter" Style="{DynamicResource BAW}" IsCheckable="True" Unchecked="MISAutoadd_Unchecked" Checked="MISAutoadd_Checked" />
             </MenuItem>
 
             <MenuItem x:Name="MIAb" Header="Справка"  Style="{DynamicResource MISBaW}" Width="60">
@@ -36,9 +36,10 @@
         </Menu>
         <ToolBarTray Orientation="Vertical" Margin="0,22,734,0" Style="{DynamicResource BAW}" HorizontalAlignment="Left" Width="70">
             <ToolBar Height="428" VerticalAlignment="Top" Style="{DynamicResource BAW}" Background="Transparent" BorderBrush="Black">
-                <Button x:Name="addButton" Content="Добавить" ToolTip="Добавляет строку в книгу обид. Shift + Enter" Width="60" Height="30" Margin="3, 0, 0,0"  Style="{DynamicResource BAW}" Click="addButton_Click"/>
-                <Button x:Name="removeButton" Content="Удалить" Width="60" Height="30"  Style="{DynamicResource BAW}"/>
-                <Button x:Name="clearButton" Content="Очистить" Width="60" Height="30"  Style="{DynamicResource BAW}"/>
+                <Button x:Name="addButton" Content="Добавить" ToolTip="Добавляет строку в книгу обид. Ctrl + Enter" Width="60" Height="30" Margin="3, 0, 0,0"  Style="{DynamicResource BAW}" Click="addButton_Click"/>
+                <Button x:Name="removeButton" Content="Удалить" ToolTip="Удаляет выделенную строку. Ctrl + Backspace" Width="60" Height="30"  Style="{DynamicResource BAW}" Click="removeButton_Click"/>
+                <Button x:Name="searchButton" Content="Поиск" ToolTip="Поиск в книге обид. Ctrl + F" Width="60" Height="30"  Style="{DynamicResource BAW}" Click="searchButton_Click"/>
+                <Button x:Name="clearButton" Content="Очистить" ToolTip="Очищает книгу обид. Ctrl + Del"  Width="60" Height="30"  Style="{DynamicResource BAW}" Click="clearButton_Click"/>
                 <Separator/>
             </ToolBar>
         </ToolBarTray>
