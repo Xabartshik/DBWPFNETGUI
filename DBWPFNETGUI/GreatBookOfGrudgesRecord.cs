@@ -213,7 +213,7 @@ namespace DBWPFNETGUI
 
 
     }
-
+    //Класс контекста. Необходим для сохранения БД
     public class BookContext : DbContext
     {
         public DbSet<GreatBookOfGrudgesRecord> Records { get; set; } = null!;
@@ -228,15 +228,17 @@ namespace DBWPFNETGUI
             optionsBuilder.UseSqlite($"Data Source={_path}");
         }
     }
+    //Класс, для сохранения БД. Используется статически
     public class SQLiteHelper
     {
+        //Куда сохранять БД (имя файла)
         static public string _databasePath { get; set; }
 
         public SQLiteHelper(string databasePath)
         {
             _databasePath = databasePath;
         }
-
+        //Статический метод сохранения данных
         public static async void SaveObservableCollection(ObservableCollection<GreatBookOfGrudgesRecord> records)
         {
             //Создание контекста
@@ -254,7 +256,7 @@ namespace DBWPFNETGUI
                 await context.SaveChangesAsync();
             }
         }
-
+        //Статический метод загрузки данных.
         public static ObservableCollection<GreatBookOfGrudgesRecord> LoadObservableCollection()
         {
             using (var context = new BookContext(_databasePath))

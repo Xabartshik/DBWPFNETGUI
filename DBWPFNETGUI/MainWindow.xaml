@@ -25,7 +25,7 @@
 
             <MenuItem Style="{DynamicResource MISBaW}" Header="Настройки"   Width="60">
                 <MenuItem x:Name="MISAutosave" Header="Автосохранение"  Style="{DynamicResource BAW}" ToolTip="Автоматическое сохранение книги обид каждые 5 минут" IsCheckable="True" Checked="MISAutosave_Checked" Unchecked="MISAutosave_Unchecked"/>
-                <MenuItem Header="Цветовыделение"  Style="{DynamicResource BAW}" IsCheckable="True" />
+                <!--<MenuItem Header="Цветовыделение"  Style="{DynamicResource BAW}" IsCheckable="True" />-->
                 <MenuItem x:Name="MISAutoadd" Header="Автоматическое добавление строки" ToolTip="Автоматически добавляет еще одну строку в книгу после нажатия Enter" Style="{DynamicResource BAW}" IsCheckable="True" Unchecked="MISAutoadd_Unchecked" Checked="MISAutoadd_Checked" />
             </MenuItem>
 
