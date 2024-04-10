@@ -172,6 +172,7 @@ namespace DBWPFNETGUI
     public class GreatBookOfGrudges
     {
         private string _databasePath;
+        private SQLiteHelper helper;
         //Информация об обидах
         public ObservableCollection<GreatBookOfGrudgesRecord> Records { get; set; }
         //Конструктор. Проверяет, существует ли файл. Если он существует, то загружает из файла, если нет, то не загружает
@@ -179,7 +180,8 @@ namespace DBWPFNETGUI
         {
             _databasePath = databasePath;
             Records = new ObservableCollection<GreatBookOfGrudgesRecord>();
-            bool fileExists = File.Exists(_databasePath);
+            helper = new SQLiteHelper(_databasePath);
+            //bool fileExists = File.Exists(_databasePath);
         }
 
         public void UpdateRecord(GreatBookOfGrudgesRecord record)
@@ -198,7 +200,7 @@ namespace DBWPFNETGUI
         //Функция сохранения данных в БД
         public void Save()
         {
-            SQLiteHelper.SaveObservableCollection(this.Records);
+            helper.SaveObservableCollection(Records);
 
         }
         //Функция загрузки данных в БД
@@ -207,7 +209,7 @@ namespace DBWPFNETGUI
             //Очистка данных
             this.Records.Clear();
             //Загрузка данных
-            this.Records = SQLiteHelper.LoadObservableCollection();
+            this.Records = helper.LoadObservableCollection();
 
         }
 
@@ -239,7 +241,7 @@ namespace DBWPFNETGUI
             _databasePath = databasePath;
         }
         //Статический метод сохранения данных
-        public static async void SaveObservableCollection(ObservableCollection<GreatBookOfGrudgesRecord> records)
+        public async void SaveObservableCollection(ObservableCollection<GreatBookOfGrudgesRecord> records)
         {
             //Создание контекста
             var dbContext = new BookContext(_databasePath);
@@ -257,7 +259,7 @@ namespace DBWPFNETGUI
             }
         }
         //Статический метод загрузки данных.
-        public static ObservableCollection<GreatBookOfGrudgesRecord> LoadObservableCollection()
+        public ObservableCollection<GreatBookOfGrudgesRecord> LoadObservableCollection()
         {
             using (var context = new BookContext(_databasePath))
             {
