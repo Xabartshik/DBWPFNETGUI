@@ -14,7 +14,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="#FF404044" Margin="0, 0, 0, 0">
-        <DataGrid x:Name="dataGrid" MinHeight="404" Margin="75,30,10,0" LoadingRow="dataGrid_LoadingRow" CellEditEnding="dataGrid_CellEditEnding"/>
+        <DataGrid x:Name="dataGrid" MinHeight="150" Margin="75,30,10,0" LoadingRow="dataGrid_LoadingRow" CellEditEnding="dataGrid_CellEditEnding" VerticalAlignment="Top" Height="300" BeginningEdit="dataGrid_BeginningEdit"/>
         <Menu Padding="3" Height="25" Style="{DynamicResource BAW}" Focusable="False" VerticalAlignment="Top">
             <MenuItem x:Name="MIFile" Style="{DynamicResource MISBaW}" Header="Файл" Width="60">
 
@@ -25,8 +25,8 @@
 
             <MenuItem Style="{DynamicResource MISBaW}" Header="Настройки"   Width="60">
                 <MenuItem x:Name="MISAutosave" Header="Автосохранение"  Style="{DynamicResource BAW}" ToolTip="Автоматическое сохранение книги обид каждые 5 минут" IsCheckable="True" Checked="MISAutosave_Checked" Unchecked="MISAutosave_Unchecked"/>
-                <!--<MenuItem Header="Цветовыделение"  Style="{DynamicResource BAW}" IsCheckable="True" />-->
                 <MenuItem x:Name="MISAutoadd" Header="Автоматическое добавление строки" ToolTip="Автоматически добавляет еще одну строку в книгу после нажатия Enter" Style="{DynamicResource BAW}" IsCheckable="True" Unchecked="MISAutoadd_Unchecked" Checked="MISAutoadd_Checked" />
+                <MenuItem x:Name="MISSavePath" Header="Выбрать путь для сохранения" ToolTip="Выбор названия файла для сохранения и загрузки" Style="{DynamicResource BAW}" Click="MISSavePath_Click"/>
             </MenuItem>
 
             <MenuItem x:Name="MIAb" Header="Справка"  Style="{DynamicResource MISBaW}" Width="60">
@@ -43,5 +43,6 @@
                 <Separator/>
             </ToolBar>
         </ToolBarTray>
+        <TextBox x:Name="TBWarning" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Margin="75,344,10,10" Height="69" IsReadOnly="True" HorizontalScrollBarVisibility="Disabled"/>
     </Grid>
 </Window>

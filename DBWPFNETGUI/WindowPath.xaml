@@ -1,0 +1,22 @@
+﻿<Window x:Class="DBWPFNETGUI.WindowPath"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DBWPFNETGUI"
+        mc:Ignorable="d"
+        Title="Выберите название файла" Height="150" Width="430">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="MyStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="0,0,0,0" Background="#FF4C4C4C">
+        <Label  Style="{DynamicResource BAW}" Background="Transparent" Content="Выберите название файла для сохранения и загрузки" HorizontalAlignment="Left" Height="42" Margin="14,21,0,0" VerticalAlignment="Top" Width="400"/>
+        <Button x:Name="ButtonEnter"  Style="{DynamicResource BAW}" Content="ОК" HorizontalAlignment="Left" Height="30" Margin="268,60,0,0" VerticalAlignment="Top" Width="113" Click="ButtonEnter_Click"/>
+        <TextBox x:Name="TBStringChoice" IsReadOnly="False" Focusable="True" Style="{DynamicResource BAW}" HorizontalAlignment="Left" Height="30" Margin="20,60,0,0" TextWrapping="Wrap" Text="Grudges.db" VerticalAlignment="Top" Width="200"/>
+
+    </Grid>
+</Window>

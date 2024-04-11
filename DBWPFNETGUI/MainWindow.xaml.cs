@@ -66,7 +66,7 @@ namespace DBWPFNETGUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private GreatBookOfGrudges greatBookOfGrudges = new GreatBookOfGrudges("");
+        private GreatBookOfGrudges greatBookOfGrudges = new GreatBookOfGrudges("Grudges.db");
         //Стили для изменения цвета ячеек
         private Style styleRed = new Style(typeof(DataGridCell));
         private Style styleGreen = new Style(typeof(DataGridCell));
@@ -86,7 +86,8 @@ namespace DBWPFNETGUI
         public static RoutedCommand HKClear = new RoutedCommand();
         //Горячая клавиша для Search Button
         public static RoutedCommand HKSearch = new RoutedCommand();
-
+        //Запрет на сохранение, пока ячейки редактируются
+        public static bool SaveCancel = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -97,7 +98,7 @@ namespace DBWPFNETGUI
             dataGrid.ItemsSource = greatBookOfGrudges.Records;
             //Куда сохранить ДБ
             //SQLiteHelper._databasePath = "D:\\SDK\\Projects\\GUI\\VS\\DBWPFNETGUI\\DBWPFNETGUI\\bin\\Debug\\net8.0-windows\\Grudges.db";
-            SQLiteHelper._databasePath = "Grudges.db";
+            //SQLiteHelper._databasePath = "Grudges.db";
             dataGrid.IsReadOnly = false;
             // Устанавливаем значение логической переменной автосохранения
             _setting_as = false;
@@ -129,9 +130,16 @@ namespace DBWPFNETGUI
             {
                 if (_setting_as)
                 {
-                    // Вызываем процедуру сохранения БД
-                    greatBookOfGrudges.Save();
-                    MessageBox.Show("База Данных сохранена успешно", "Сохранение завершено");
+                    if (SaveCancel)
+                    {
+                        MessageBox.Show("Нельзя сохранить, пока редактирование не завершено!", "Ошибка!");
+                    }
+                    else
+                    {
+                        greatBookOfGrudges.Save();
+                        TBWarning.Text += "Сохранение завершено в файл " + greatBookOfGrudges.Path() + "\n";
+                        TBWarning.ScrollToEnd();
+                    }
                 }
 
                 // Ожидаем 300 секунд
@@ -156,22 +164,55 @@ namespace DBWPFNETGUI
         //Обработчик событий кнопки "Загрузить". Загружает файл базы данных, вызывая диалоговое окно
         private void MIFLoad_Click(object sender, RoutedEventArgs e)
         {
-            //Загрузка данных
-            greatBookOfGrudges.Load();
-            //Поскольку операция загрузки возвращает новый объект, нужно заново укзать на источник данных
-            dataGrid.ItemsSource = greatBookOfGrudges.Records;
-            MessageBox.Show("Загружено");
+            //Проверка на загрузку файла
+            try
+            {
+                //Загрузка данных
+                greatBookOfGrudges.Load();
+                //Поскольку операция загрузки возвращает новый объект, нужно заново укзать на источник данных
+                dataGrid.ItemsSource = greatBookOfGrudges.Records;
+                TBWarning.Text += "Загрузка завершена из файла " + greatBookOfGrudges.Path() + "\n";
+                TBWarning.ScrollToEnd();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка!");
+            }
         }
         //Обработчик кнопки Добавить. Добавляет пустую строку
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
-            greatBookOfGrudges.Records.Add(new GreatBookOfGrudgesRecord());
+            if (SaveCancel)
+            {
+                MessageBox.Show("Нельзя добавить строку, пока редактирование не завершено!", "Ошибка!");
+            }
+            int size = greatBookOfGrudges.Records.Count;
+            if (size == 0)
+            {
+                greatBookOfGrudges.Records.Add(new GreatBookOfGrudgesRecord());
+            }
+            else
+            {
+                uint last_id = greatBookOfGrudges.Records[size-1].GrudgeNumber;
+                greatBookOfGrudges.Records.Add(new GreatBookOfGrudgesRecord((uint)(last_id + 1)));
+                TBWarning.Text += "Добавлена строка\n";
+                TBWarning.ScrollToEnd();
+
+            }
         }
         //Обработчик кнопки Сохранить. Сохраняет БД
         private void MIFSave_Click(object sender, RoutedEventArgs e)
         {
-            greatBookOfGrudges.Save();
-            MessageBox.Show("База Данных сохранена успешно", "Сохранение завершено");
+            if (SaveCancel)
+            {
+                MessageBox.Show("Нельзя сохранить, пока редактирование не завершено!", "Ошибка!");
+            }
+            else 
+            {
+                greatBookOfGrudges.Save();
+                TBWarning.Text += "Сохранение завершено в файл "+ greatBookOfGrudges.Path() +"\n";
+                TBWarning.ScrollToEnd();
+            }
         }
 
 
@@ -189,54 +230,122 @@ namespace DBWPFNETGUI
         {
 
         }
-
+        /// <summary>
+        /// Отмена запрета на сохранение после завершения редактирования
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-
+            SaveCancel = false;
 
         }
-        //Присваивание переменной автосохранения значения Истина
+        /// <summary>
+        /// Присваивание переменной автосохранения значения Истина
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MISAutosave_Checked(object sender, RoutedEventArgs e)
         {
-            _setting_as = true; 
+            _setting_as = true;
+            TBWarning.Text += "Автосохранение включено\n";
+            TBWarning.ScrollToEnd();
+
         }
-        //Присваивание переменной автосохранения значения Ложь
+        /// <summary>
+        /// Присваивание переменной автосохранения значения Ложь
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MISAutosave_Unchecked(object sender, RoutedEventArgs e)
         {
             _setting_as = false;
+            TBWarning.Text += "Автосохранение отключено\n";
+            TBWarning.ScrollToEnd();
         }
-        //Отображение модального окна поиска
+        /// <summary>
+        /// Отображение модального окна поиска
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
             var windowSearch = new WindowSearch(greatBookOfGrudges);
+            windowSearch.Owner = this;
             windowSearch.ShowDialog();
         }
-        //Кнопка удаления одной строки. Удаляет одну строку
+        /// <summary>
+        /// Кнопка удаления одной строки. Удаляет одну строку
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void removeButton_Click(object sender, RoutedEventArgs e)
         {
             int sIndex = dataGrid.SelectedIndex;
             if (sIndex != -1)
             {
                 greatBookOfGrudges.Records.RemoveAt(sIndex);
+                sIndex++;
+                TBWarning.Text += "Строка №" + sIndex.ToString() + "удалена\n";
+                TBWarning.ScrollToEnd();
 
             }
             else
-                MessageBox.Show("Нажми на строку для удаления", "Ошибка");
+                MessageBox.Show("Нажми на строку для удаления!", "Ошибка");
         }
-        //Очищает всё. Очищает как коллекцию, так и таблицу
+        /// <summary>
+        /// Очищает всё. Очищает как коллекцию, так и таблицу
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void clearButton_Click(object sender, RoutedEventArgs e)
         {
             greatBookOfGrudges.Records.Clear();
         }
-        //Настройка добавления автоматического строк. Включает 
+        /// <summary>
+        /// Настройка добавления автоматического строк. Включает 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MISAutoadd_Unchecked(object sender, RoutedEventArgs e)
         {
             dataGrid.CanUserAddRows = false;
+            TBWarning.Text += "Автодобавление строки отключено\n";
+            TBWarning.ScrollToEnd();
         }
-        //Настройка добавления автоматического строк. Выключает 
+        /// <summary>
+        /// Настройка добавления автоматического строк. Выключает 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MISAutoadd_Checked(object sender, RoutedEventArgs e)
         {
             dataGrid.CanUserAddRows = true;
+            TBWarning.Text += "Автодобавление строки включено\n";
+            TBWarning.ScrollToEnd();
+        }
+        /// <summary>
+        /// Включение запрета на сохранение ячеек, пока не закончится сохранения
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            SaveCancel = true;
+        }
+        //Выбор пути для сохранения
+        private void MISSavePath_Click(object sender, RoutedEventArgs e)
+        {
+            string newpath;
+            var windowEditPath = new WindowPath();
+            windowEditPath.Owner = this;
+            windowEditPath.ShowDialog();
+            if (windowEditPath.chosen_path != null)
+            {
+                newpath = windowEditPath.chosen_path;
+                greatBookOfGrudges.UpdatePath(newpath);
+                TBWarning.Text += "Выбран новый путь по умолчанию: " + greatBookOfGrudges.Path() + "\n";
+            }
         }
     }
 }

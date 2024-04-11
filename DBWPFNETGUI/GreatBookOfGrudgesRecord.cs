@@ -64,6 +64,18 @@ namespace DBWPFNETGUI
             _grudgeLevel = "";
         }
 
+        // Конструктор по умолчанию c указанием id
+        public GreatBookOfGrudgesRecord(uint grudgeNumber)
+        {
+            _grudgeNumber = grudgeNumber;
+            _grudge = "";
+            _dateOfWrongdoing = "";
+            _foolName = "";
+            _redemptionStatus = "";
+            _witness = "";
+            _evidence = "";
+            _grudgeLevel = "";
+        }
         // Конструктор с параметрами
         public GreatBookOfGrudgesRecord(uint grudgeNumber, string grudge, string dateOfWrongdoing, string foolName, string redemptionStatus, string witness, string evidence, string grudgeLevel)
         {
@@ -172,6 +184,15 @@ namespace DBWPFNETGUI
     public class GreatBookOfGrudges
     {
         private string _databasePath;
+        public string Path()
+        {
+            return _databasePath;
+        }
+        public void UpdatePath(string new_path)
+        {
+            _databasePath = new_path;
+            helper = new SQLiteHelper(new_path);
+        }
         private SQLiteHelper helper;
         //Информация об обидах
         public ObservableCollection<GreatBookOfGrudgesRecord> Records { get; set; }
@@ -206,10 +227,17 @@ namespace DBWPFNETGUI
         //Функция загрузки данных в БД
         public void Load()
         {
-            //Очистка данных
-            this.Records.Clear();
-            //Загрузка данных
-            this.Records = helper.LoadObservableCollection();
+            //try
+            //{
+                //Очистка данных
+                this.Records.Clear();
+                //Загрузка данных
+                this.Records = helper.LoadObservableCollection();
+            //}
+            //catch(Exception e)
+            //{
+            //    MessageBox.Show(e.Message, "Ошибка!");
+            //}
 
         }
 
@@ -261,6 +289,14 @@ namespace DBWPFNETGUI
         //Статический метод загрузки данных.
         public ObservableCollection<GreatBookOfGrudgesRecord> LoadObservableCollection()
         {
+            //Проверка существования БД
+            bool fileExists = File.Exists(_databasePath);
+            if (!fileExists)
+                throw new Exception("Ошибка загрузки Файла. Возможно, его нет.");
+            //Проверка на пустоту файла
+            long fileSize = new FileInfo(_databasePath).Length;
+            if (fileSize == 0)
+                throw new Exception("Ошибка загрузки Файла. Возможно, он пуст.");
             using (var context = new BookContext(_databasePath))
             {
                 var records = context.Records.ToList();
